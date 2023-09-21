@@ -21,6 +21,7 @@ import { BotAvatar } from "@/components/bot-avatar";
 const ConversationPage = () => {
   const router = useRouter();
   const [messages, setMessages] = useState<any[]>([]);
+  console.log("first", messages);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -31,14 +32,21 @@ const ConversationPage = () => {
   const isLoading = form.formState.isSubmitting;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const userMessage = {
-        role: "user",
-        content: values.prompt,
-      };
+      // const userMessage = {
+      //   role: "user",
+      //   content: values.prompt,
+      // };
+      // const newMessages = [...messages, userMessage];
+      // const response = await axios.post("/api/conversation", {
+      //   messages: newMessages,
+      // });
+      // setMessages((prev) => [...prev, userMessage, response.data]);
+      const userMessage = { author: "0", content: values.prompt };
       const newMessages = [...messages, userMessage];
-      const response = await axios.post("/api/conversation", {
+      const response = await axios.post("/api/chat", {
         messages: newMessages,
       });
+      console.log("Response", response);
       setMessages((prev) => [...prev, userMessage, response.data]);
       form.reset();
     } catch (err: any) {
@@ -109,7 +117,8 @@ const ConversationPage = () => {
                     : "bg-muted"
                 )}
               >
-                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+                {/* {message.role === "user" ? <UserAvatar /> : <BotAvatar />} */}
+                {message.author === "0" ? <UserAvatar /> : <BotAvatar />}
                 <p className='text-sm'>{message.content}</p>
               </div>
             ))}
