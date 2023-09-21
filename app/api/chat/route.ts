@@ -1,9 +1,10 @@
 // Uses Makersuit API instead of openai
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-
-import { DiscussServiceClient } from "@google-ai/generativelanguage";
 import { GoogleAuth } from "google-auth-library";
+import { DiscussServiceClient } from "@google-ai/generativelanguage";
+
+import { checkApiLimit, increaseApiLimit } from "@/lib/api-limit";
 
 const MODEL_NAME = "models/chat-bison-001";
 const API_KEY = process.env.MAKERSUIT_API_KEY!; // assertion(!) shows that it will not be a null value
@@ -25,11 +26,15 @@ export async function POST(req: Request) {
     if (!messages[0]) {
       return new NextResponse("messages are required", { status: 400 });
     }
+    const freeTrial = await checkApiLimit();
+    if (!freeTrial) {
+      return new NextResponse("Free Trial expired.", { status: 403 });
+    }
     const response = await client.generateMessage({
       model: MODEL_NAME,
       prompt: { messages },
     });
-    console.log(response);
+    await increaseApiLimit();
     const resData = response!;
     const content = resData[0].candidates!;
     const reply = content[0];
