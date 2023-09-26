@@ -33,10 +33,12 @@ const CodePage = () => {
   const isLoading = form.formState.isSubmitting;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const userMessage = {
-        role: "user",
-        content: values.prompt,
-      };
+      // const userMessage = {
+      //   role: "user",
+      //   content: values.prompt,
+      // };
+      // const newMessages = [...messages, userMessage];
+      const userMessage = { author: "0", content: values.prompt };
       const newMessages = [...messages, userMessage];
       const response = await axios.post("/api/code", {
         messages: newMessages,
