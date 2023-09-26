@@ -32,12 +32,12 @@ const routes = [
     href: "/conversation",
     color: "text-violet-500",
   },
-  {
-    label: "Image Generation",
-    icon: ImageIcon,
-    href: "/image",
-    color: "text-pink-700",
-  },
+  // {
+  //   label: "Image Generation",
+  //   icon: ImageIcon,
+  //   href: "/image",
+  //   color: "text-pink-700",
+  // },
   {
     label: "Video Generation",
     icon: VideoIcon,

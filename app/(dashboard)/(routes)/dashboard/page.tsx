@@ -20,13 +20,13 @@ const tools = [
     bgColor: "bg-violet-500/10",
     href: "/conversation",
   },
-  {
-    label: "Image Generation",
-    icon: ImageIcon,
-    href: "/image",
-    color: "text-pink-700",
-    bgColor: "bg-pink-700/10",
-  },
+  // {
+  //   label: "Image Generation",
+  //   icon: ImageIcon,
+  //   href: "/image",
+  //   color: "text-pink-700",
+  //   bgColor: "bg-pink-700/10",
+  // },
   {
     label: "Video Generation",
     icon: VideoIcon,

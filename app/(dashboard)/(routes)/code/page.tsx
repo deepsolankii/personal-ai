@@ -19,9 +19,11 @@ import { UserAvatar } from "@/components/user-avatar";
 import { BotAvatar } from "@/components/bot-avatar";
 import ReactMarkDown from "react-markdown";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import { useProModal } from "@/hooks/use-pro-model";
 
 const CodePage = () => {
   const router = useRouter();
+  const proModal = useProModal();
   const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -46,6 +48,9 @@ const CodePage = () => {
       setMessages((prev) => [...prev, userMessage, response.data]);
       form.reset();
     } catch (err: any) {
+      if (err?.response?.status === 403) {
+        proModal.onOpen();
+      }
       console.log(err);
     } finally {
       router.refresh();
