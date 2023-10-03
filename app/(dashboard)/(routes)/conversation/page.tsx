@@ -1,37 +1,38 @@
-"use client";
-import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { MessageSquareIcon } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import axios from "axios";
+"use client"
+import * as z from "zod"
+import { useForm } from "react-hook-form"
+import { MessageSquareIcon } from "lucide-react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import axios from "axios"
 
-import { formSchema } from "./constants";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import Heading from "@/components/heading";
-import { Empty } from "@/components/empty";
-import { Loader } from "@/components/loader";
-import { cn } from "@/lib/utils";
-import { UserAvatar } from "@/components/user-avatar";
-import { BotAvatar } from "@/components/bot-avatar";
-import { useProModal } from "@/hooks/use-pro-model";
+import { formSchema } from "./constants"
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import Heading from "@/components/heading"
+import { Empty } from "@/components/empty"
+import { Loader } from "@/components/loader"
+import { cn } from "@/lib/utils"
+import { UserAvatar } from "@/components/user-avatar"
+import { BotAvatar } from "@/components/bot-avatar"
+import { useProModal } from "@/hooks/use-pro-model"
+import toast from "react-hot-toast"
 
 const ConversationPage = () => {
-  const router = useRouter();
-  const proModal = useProModal();
-  const [messages, setMessages] = useState<any[]>([]);
-  console.log("first", messages);
+  const router = useRouter()
+  const proModal = useProModal()
+  const [messages, setMessages] = useState<any[]>([])
+  console.log("first", messages)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       prompt: "",
     },
-  });
-  const isLoading = form.formState.isSubmitting;
+  })
+  const isLoading = form.formState.isSubmitting
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       // const userMessage = {
@@ -43,48 +44,49 @@ const ConversationPage = () => {
       //   messages: newMessages,
       // });
       // setMessages((prev) => [...prev, userMessage, response.data]);
-      const userMessage = { author: "0", content: values.prompt };
-      const newMessages = [...messages, userMessage];
+      const userMessage = { author: "0", content: values.prompt }
+      const newMessages = [...messages, userMessage]
       const response = await axios.post("/api/chat", {
         messages: newMessages,
-      });
-      console.log("Response", response);
-      setMessages((prev) => [...prev, userMessage, response.data]);
-      form.reset();
+      })
+      console.log("Response", response)
+      setMessages((prev) => [...prev, userMessage, response.data])
+      form.reset()
     } catch (err: any) {
       if (err?.response?.status === 403) {
-        proModal.onOpen();
+        proModal.onOpen()
+      } else {
+        toast.error("Something Went Wrong")
       }
-      console.log(err);
     } finally {
-      router.refresh();
+      router.refresh()
     }
-  };
+  }
   return (
     <div>
       <Heading
-        title='Conversation'
-        description='Our advanced conversation model'
+        title="Conversation"
+        description="Our advanced conversation model"
         icon={MessageSquareIcon}
-        iconColor='text-violet-500'
-        bgColor='bg-violet-500/10'
+        iconColor="text-violet-500"
+        bgColor="bg-violet-500/10"
       />
-      <div className='px-4 lg:px-8'>
+      <div className="px-4 lg:px-8">
         <div>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className='rounded-lg border w-full p-4 px-3 md:px-6 focus-within:shadow-sm grid grid-cols-12 gap-2 '
+              className="rounded-lg border w-full p-4 px-3 md:px-6 focus-within:shadow-sm grid grid-cols-12 gap-2 "
             >
               <FormField
-                name='prompt'
+                name="prompt"
                 render={({ field }) => (
-                  <FormItem className='col-span-12 lg:col-span-10'>
-                    <FormControl className='m-0 p-0'>
+                  <FormItem className="col-span-12 lg:col-span-10">
+                    <FormControl className="m-0 p-0">
                       <Input
-                        className='border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent'
+                        className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
-                        placeholder='What is Golden Ratio'
+                        placeholder="What is Golden Ratio"
                         {...field}
                       />
                     </FormControl>
@@ -92,7 +94,7 @@ const ConversationPage = () => {
                 )}
               />
               <Button
-                className='col-span-12 lg:col-span-2 w-full'
+                className="col-span-12 lg:col-span-2 w-full"
                 disabled={isLoading}
               >
                 Generate
@@ -100,18 +102,18 @@ const ConversationPage = () => {
             </form>
           </Form>
         </div>
-        <div className='space-y-4 mt-4'>
+        <div className="space-y-4 mt-4">
           {isLoading && (
-            <div className='p-8 rounded-lg w-full flex items-center justify-center bg-muted'>
+            <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
               <Loader />
             </div>
           )}
           {messages.length === 0 && !isLoading && (
             <div>
-              <Empty label='No conversation started.' />
+              <Empty label="No conversation started." />
             </div>
           )}
-          <div className='flex flex-col-reverse gap-y-4'>
+          <div className="flex flex-col-reverse gap-y-4">
             {messages.map((message) => (
               <div
                 key={message.content}
@@ -124,14 +126,14 @@ const ConversationPage = () => {
               >
                 {/* {message.role === "user" ? <UserAvatar /> : <BotAvatar />} */}
                 {message.author === "0" ? <UserAvatar /> : <BotAvatar />}
-                <p className='text-sm'>{message.content}</p>
+                <p className="text-sm">{message.content}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ConversationPage;
+export default ConversationPage
