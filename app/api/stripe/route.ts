@@ -38,12 +38,12 @@ export async function GET() {
       line_items: [
         {
           price_data: {
-            currency: "USD",
+            currency: "INR",
             product_data: {
               name: "Rajnikant AI",
               description: "Unlimited AI Generation",
             },
-            unit_amount: 1000,
+            unit_amount: 100,
             recurring: {
               interval: "month",
             },
