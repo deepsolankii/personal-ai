@@ -1,6 +1,6 @@
 /*
 This route is not used anymore. Open AI free trial expired
-
+*/
 
 import { auth } from "@clerk/nextjs"
 import { NextResponse } from "next/server"
@@ -46,4 +46,3 @@ export async function POST(req: Request) {
     return new NextResponse("internal server error", { status: 500 })
   }
 }
-*/
